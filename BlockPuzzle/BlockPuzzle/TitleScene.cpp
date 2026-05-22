@@ -1,0 +1,59 @@
+﻿#include "TitleScene.h"
+
+
+TitleScene::TitleScene(const InitData& init)
+	: IScene{ init }
+{
+}
+
+void TitleScene::update()
+{
+	// ボタンの更新
+	{
+		m_startTransition.update(m_startButton.mouseOver());
+		m_rankingTransition.update(m_rankingButton.mouseOver());
+		m_exitTransition.update(m_exitButton.mouseOver());
+
+		//マウスカーソルを手の形にする
+		if (m_startButton.mouseOver() || m_rankingButton.mouseOver() || m_exitButton.mouseOver())
+		{
+			Cursor::RequestStyle(CursorStyle::Hand);
+		}
+	}
+
+	// ボタンのクリック処理
+	if (m_startButton.leftClicked()) // ゲームへ
+	{
+		changeScene(State::Game);
+	}
+	else if (m_rankingButton.leftClicked()) // ランキングへ
+	{
+		changeScene(State::Ranking);
+	}
+	else if (m_exitButton.leftClicked()) // 終了
+	{
+		System::Exit();
+	}
+}
+
+void TitleScene::draw() const
+{
+	Scene::SetBackground(ColorF{ 0.2, 0.6, 1.0 });
+
+	// タイトル描画
+	FontAsset(U"TitleFont")(U"BlockPuzzle")
+		.drawAt(TextStyle::OutlineShadow(0.2, ColorF{ 0.0, 0.0, 0.0 }, Vec2{ 3, 3 }, ColorF{ 0.0, 0.5 }), 100, Vec2{ 400, 100 + Sin(Scene::Time() * 2) * 10 });
+
+	// ボタン描画
+	{
+		//中が白色.枠が黒色のボタン
+		m_startButton.draw(ColorF{ 1.0 }).drawFrame(2, ColorF{ 0.0,0.0,0.0 });
+		m_rankingButton.draw(ColorF{ 1.0 }).drawFrame(2, ColorF{ 0.0,0.0,0.0 });
+		m_exitButton.draw(ColorF{ 1.0 }).drawFrame(2, ColorF{ 0.0,0.0,0.0 });
+
+		const Font& boldFont = FontAsset(U"Bold");
+		boldFont(U"プレイ").drawAt(36, m_startButton.center(), ColorF{ 0.1 });
+		boldFont(U"ランキング").drawAt(36, m_rankingButton.center(), ColorF{ 0.1 });
+		boldFont(U"終了").drawAt(36, m_exitButton.center(), ColorF{ 0.1 });
+	}
+}
