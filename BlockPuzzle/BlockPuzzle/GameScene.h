@@ -1,24 +1,20 @@
-﻿# pragma once
-# include "Common.h"
+﻿#pragma once
+#include "Common.h"
 
 // ゲームシーン
 class GameScene : public App::Scene
 {
 public:
-
 	GameScene(const InitData& init);
 	void update() override;
 	void draw() const override;
 
 private:
-
-	// ブロックのサイズ
-	static constexpr Size BrickSize{ 40, 40 };
-
-	// 現在のゲームのスコア
-	int32 m_score = 0;
-
-	Rect getPaddle() const;
+	Array<Point> Blocks;//ブロックデータ
+	Array<Array<int>>board;//盤面データ
+	Point SpawnPos = { 12,3 };//生成位置
+	Point CurrentBlockPos = { 12,3 };//操作中ブロック
+	bool isHolding = false;//ブロックを持つか
 };
 
 

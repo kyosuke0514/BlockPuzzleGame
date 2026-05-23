@@ -1,7 +1,12 @@
-﻿# pragma once
-# include <Siv3D.hpp>
+﻿#pragma once
+#include <Siv3D.hpp>
 
-// シーンのステート
+//共通基盤データ
+constexpr int BoardWidth = 10;
+constexpr int BoardHeight = 10;
+constexpr int CellSize = 40;
+
+//シーンのステート
 enum class State
 {
 	Title,
@@ -9,13 +14,13 @@ enum class State
 	Ranking,
 };
 
-// 共有するデータ
+//共有するデータ
 struct GameData
 {
-	// 直前のゲームのスコア
+	//直前のゲームのスコア
 	int32 lastScore = 0;
 
-	// ハイスコア
+	//ハイスコア
 	Array<int32> highScores = {};
 };
 
