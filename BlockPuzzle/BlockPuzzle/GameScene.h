@@ -10,11 +10,47 @@ public:
 	void draw() const override;
 
 private:
+	bool isHolding = false;//ブロックを持つか
 	Array<Point> Blocks;//ブロックデータ
 	Array<Array<int>>board;//盤面データ
 	Point SpawnPos = { 12,3 };//生成位置
 	Point CurrentBlockPos = { 12,3 };//操作中ブロック
-	bool isHolding = false;//ブロックを持つか
+	Point HoldOffset;//どこをつかむか
+	Array<Point> CurrentBlock = {};// 現在のブロック形
+	Array<Array<Point>> BlockShapes =
+	{
+		// 1マス
+		{
+			{0,0}
+		},
+		// 横棒
+		{
+			{0,0},
+			{1,0},
+			{2,0}
+		},
+		// L字
+		{
+			{0,0},
+			{0,1},
+			{1,1}
+		},
+		// 四角
+		{
+			{0,0},
+			{1,0},
+			{0,1},
+			{1,1}
+		},
+		// T字
+		{
+			{0,0},
+			{1,0},
+			{2,0},
+			{1,1}
+		}
+	};
+	
 };
 
 
