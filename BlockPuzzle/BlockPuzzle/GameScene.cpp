@@ -13,15 +13,38 @@ void GameScene::update()
 {
 	bool touched = false;
 
-
-
 	//マウスの座標
 	Point mouseGrid{
 		Cursor::Pos().x / CellSize,
 		Cursor::Pos().y / CellSize
 	};
 
-	
+	//ブロックを回転したとき
+	if (isHolding&&MouseR.down())
+	{
+		Array<Point> rotated;//回転データ
+		Vec2 center(0, 0);
+		for (const auto& cell : CurrentBlock)
+		{
+			center += Vec2(cell.y, -cell.x);
+		}
+
+		center /= CurrentBlock.size();
+
+		for (const auto& cell : CurrentBlock)
+		{
+			double relX = cell.x - center.x;
+			double relY = cell.y - center.y;
+
+			int newX = static_cast<int>(Round(-relY + center.x));
+			int newY = static_cast<int>(Round(relX + center.y));
+
+			rotated << Point(newX, newY);
+		}
+
+
+		CurrentBlock = rotated;
+	}
 
 	//ブロックを取得した時
 	if (!isHolding)
@@ -39,6 +62,7 @@ void GameScene::update()
 
 			if (rect.leftClicked())
 			{
+
 				isHolding = true;
 				HoldOffset =
 				{
@@ -71,6 +95,8 @@ void GameScene::update()
 			isHolding = false;
 		}
 	}
+
+	
 }
 
 void GameScene::draw() const
