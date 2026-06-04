@@ -17,6 +17,10 @@ private:
 	Point CurrentBlockPos = { 12,3 };//操作中ブロック
 	Point HoldOffset;//どこをつかむか
 	Array<Point> CurrentBlock = {};// 現在のブロック形
+
+	Array<Array<Point>>CurrentBlocks;
+	int SelectedBlock = -1;
+
 	Array<Array<Point>> BlockShapes =
 	{
 		// 1マス

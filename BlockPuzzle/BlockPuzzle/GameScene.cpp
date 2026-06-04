@@ -1,12 +1,17 @@
 ﻿#include "GameScene.h"
 #include "Common.h"
 #include <Siv3D.hpp>
+
 GameScene::GameScene(const InitData& init)
 	: IScene{ init }
 {
 	board = Array<Array<int>>(BoardHeight, Array<int>(BoardWidth, 0));
-	const int index = Random<int>(0, static_cast<int>(BlockShapes.size() - 1));
-	CurrentBlock = BlockShapes[index];
+	for (int i = 0; i < 3; i++)
+	{
+		const int index = Random<int>(0, static_cast<int>(BlockShapes.size() - 1));
+		CurrentBlocks << BlockShapes[index];
+	}
+	CurrentBlock = CurrentBlocks[0];
 }
 
 void GameScene::update()
@@ -48,27 +53,32 @@ void GameScene::update()
 	//ブロックを取得した時
 	if (!isHolding)
 	{
-		//ブロック
-		for (const auto& cell : CurrentBlock)
+		for (int i = 0; i < CurrentBlocks.size(); i++)
 		{
-			Rect rect
-			(
-			(CurrentBlockPos.x + cell.x) * CellSize,
-			(CurrentBlockPos.y + cell.y) * CellSize,
-			CellSize,
-			CellSize
-			);
+			Point previewPos{ 12, 3 + i * 5 };
 
-			if (rect.leftClicked())
+			for (const auto& cell : CurrentBlocks[i])
 			{
+				Rect rect(
+					(previewPos.x + cell.x) * CellSize,
+					(previewPos.y + cell.y) * CellSize,
+					CellSize,
+					CellSize
+				);
 
-				isHolding = true;
-				HoldOffset =
+				if (rect.leftClicked())
 				{
-					Cursor::Pos().x - CurrentBlockPos.x * CellSize,
-					Cursor::Pos().y - CurrentBlockPos.y * CellSize
-				};
-				
+					SelectedBlock = i;
+					CurrentBlock = CurrentBlocks[i];
+
+					isHolding = true;
+
+					HoldOffset =
+					{
+						Cursor::Pos().x - previewPos.x * CellSize,
+						Cursor::Pos().y - previewPos.y * CellSize
+					};
+				}
 			}
 		}
 	}
@@ -86,10 +96,40 @@ void GameScene::update()
 						mouseGrid.y + cell.y
 					};
 				}
-				// 新しいブロック生成
-				const int index = Random<int>(0, static_cast<int>(BlockShapes.size() - 1));
 
-				CurrentBlock = BlockShapes[index];
+				// 新しいブロック生成
+
+				//使い終わったブロックを消す
+				CurrentBlocks[SelectedBlock].clear();
+				CurrentBlock.clear();
+				SelectedBlock = -1;
+
+				bool allEmpty = true;
+
+				for (const auto& block : CurrentBlocks)
+				{
+					if (!block.isEmpty())
+					{
+						allEmpty = false;
+						break;
+					}
+				}
+
+				if (allEmpty)
+				{
+					CurrentBlocks.clear();
+			
+
+					for (int i = 0; i < 3; i++)
+					{
+						int index = Random<int>(
+							0,
+							static_cast<int>(BlockShapes.size() - 1)
+						);
+
+						CurrentBlocks << BlockShapes[index];
+					}
+				}
 			}
 			isHolding = false;
 		}
@@ -121,6 +161,32 @@ void GameScene::draw() const
 			CellSize,
 			CellSize
 		).draw(Palette::Skyblue);
+	}
+
+	//3個ブロック表示
+	for (int i = 0; i<CurrentBlocks.size(); i++)
+	{
+		if (CurrentBlocks[i].isEmpty())
+		{
+			continue;
+		}
+
+		if (isHolding && i == SelectedBlock)
+		{
+			continue;
+		}
+
+		Point previewPos{ 12, 3 + i * 5 };
+
+		for (const auto& cell : CurrentBlocks[i])
+		{
+			Rect(
+				(previewPos.x + cell.x) * CellSize,
+				(previewPos.y + cell.y) * CellSize,
+				CellSize,
+				CellSize
+			).draw(Palette::Orange);
+		}
 	}
 
 	//新規ブロック表示
