@@ -26,7 +26,7 @@ void GameScene::update()
 		Vec2 center(0, 0);
 		for (const auto& cell : CurrentBlock)
 		{
-			center += Vec2(cell.y, -cell.x);
+			center += Vec2(cell);
 		}
 
 		center /= CurrentBlock.size();
@@ -41,7 +41,6 @@ void GameScene::update()
 
 			rotated << Point(newX, newY);
 		}
-
 
 		CurrentBlock = rotated;
 	}
@@ -95,8 +94,6 @@ void GameScene::update()
 			isHolding = false;
 		}
 	}
-
-	
 }
 
 void GameScene::draw() const
@@ -127,7 +124,7 @@ void GameScene::draw() const
 	}
 
 	//新規ブロック表示
-	for(const auto &cell:CurrentBlock)
+	for (const auto& cell : CurrentBlock)
 	{
 		Point drawPos;
 		if (!isHolding)
@@ -154,7 +151,6 @@ void GameScene::draw() const
 			CellSize
 		).draw(Palette::Skyblue);
 	}
-	
 }
 
 
