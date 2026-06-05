@@ -123,6 +123,70 @@ void GameScene::update()
 							mouseGrid.y + cell.y
 						};
 					}
+
+					//横１列揃ったら消える
+					Array<int>clearRows;
+
+					for (int y = 0; y < BoardHeight; y++)
+					{
+						int count = 0;
+
+						for (const auto& block : Blocks)
+						{
+							if (block.y == y)
+							{
+								count++;
+							}
+						}
+						if (count == BoardHeight)
+						{
+							clearRows << y;
+						}
+					}
+
+					for (int row : clearRows)
+					{
+						for (int i = static_cast<int>(Blocks.size()) - 1; i >= 0; --i)
+						{
+							if (Blocks[i].y == row)
+							{
+								Blocks.erase(Blocks.begin() + i);
+							}
+						}
+					}
+
+					//縦１列揃ったら消える
+					Array<int> clearCols;
+
+					for (int x = 0; x < BoardWidth; x++)
+					{
+						int count = 0;
+
+						for (const auto& block : Blocks)
+						{
+							if (block.x == x)
+							{
+								count++;
+							}
+						}
+
+						if (count == BoardHeight)
+						{
+							clearCols << x;
+						}
+					}
+
+					for (int col : clearCols)
+					{
+						for (int i = static_cast<int>(Blocks.size()) - 1; i >= 0; --i)
+						{
+							if (Blocks[i].x == col)
+							{
+								Blocks.erase(Blocks.begin() + i);
+							}
+						}
+					}
+
 					//使い終わったブロックを消す
 					CurrentBlocks[SelectedBlock].clear();
 					CurrentBlock.clear();
@@ -131,8 +195,6 @@ void GameScene::update()
 					isHolding = false;
 				}
 					
-				
-
 				// ３つのブロックを使い終わったか
 				bool allEmpty = true;
 
@@ -158,7 +220,6 @@ void GameScene::update()
 					}
 				}
 			}
-			
 		}
 	}
 }
