@@ -24,6 +24,13 @@ void GameScene::update()
 		Cursor::Pos().y / CellSize
 	};
 
+
+	Point blockPos
+	{
+		(Cursor::Pos().x - HoldOffset.x) / CellSize,
+		(Cursor::Pos().y - HoldOffset.y) / CellSize
+	};
+
 	//ブロックを回転したとき
 	if (isHolding&&MouseR.down())
 	{
@@ -59,7 +66,8 @@ void GameScene::update()
 
 			for (const auto& cell : CurrentBlocks[i])
 			{
-				Rect rect(
+				Rect rect
+				(
 					(previewPos.x + cell.x) * CellSize,
 					(previewPos.y + cell.y) * CellSize,
 					CellSize,
@@ -86,23 +94,47 @@ void GameScene::update()
 	{
 		if (MouseL.up())
 		{
+			bool canPlace = true; //ブロックが重なっているか
 			if (0 <= mouseGrid.x && mouseGrid.x < BoardWidth && 0 <= mouseGrid.y && mouseGrid.y < BoardHeight)
 			{
 				for (const auto& cell : CurrentBlock)
 				{
-					Blocks << Point
+					Point pos
 					{
 						mouseGrid.x + cell.x,
 						mouseGrid.y + cell.y
 					};
+
+					if (Blocks.contains(pos))
+					{
+						canPlace = false;
+						break;
+					}
 				}
+
+				if (canPlace)
+				{
+					for (const auto& cell : CurrentBlock)
+					{
+						Blocks << Point
+						{
+							mouseGrid.x + cell.x,
+							mouseGrid.y + cell.y
+						};
+					}
+					//使い終わったブロックを消す
+					CurrentBlocks[SelectedBlock].clear();
+					CurrentBlock.clear();
+					SelectedBlock = -1;
+
+					isHolding = false;
+				}
+					
+				
 
 				// 新しいブロック生成
 
-				//使い終わったブロックを消す
-				CurrentBlocks[SelectedBlock].clear();
-				CurrentBlock.clear();
-				SelectedBlock = -1;
+				
 
 				bool allEmpty = true;
 
@@ -118,20 +150,16 @@ void GameScene::update()
 				if (allEmpty)
 				{
 					CurrentBlocks.clear();
-			
 
 					for (int i = 0; i < 3; i++)
 					{
-						int index = Random<int>(
-							0,
-							static_cast<int>(BlockShapes.size() - 1)
-						);
-
+						int index = Random<int>
+						(0,static_cast<int>(BlockShapes.size() - 1));
 						CurrentBlocks << BlockShapes[index];
 					}
 				}
 			}
-			isHolding = false;
+			
 		}
 	}
 }
@@ -139,9 +167,12 @@ void GameScene::update()
 void GameScene::draw() const
 {
 	//基盤表示
-	for (int y = 0; y < BoardHeight; ++y) {
-		for (int x = 0; x < BoardWidth; ++x) {
-			Rect rect(
+	for (int y = 0; y < BoardHeight; ++y)
+	{
+		for (int x = 0; x < BoardWidth; ++x)
+		{
+			Rect rect
+			(
 				x * CellSize,
 				y * CellSize,
 				CellSize,
@@ -180,7 +211,8 @@ void GameScene::draw() const
 
 		for (const auto& cell : CurrentBlocks[i])
 		{
-			Rect(
+			Rect
+			(
 				(previewPos.x + cell.x) * CellSize,
 				(previewPos.y + cell.y) * CellSize,
 				CellSize,
