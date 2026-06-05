@@ -15,10 +15,10 @@ GameScene::GameScene(const InitData& init)
 
 void GameScene::update()
 {
-	//マウスの座標
-	Point mouseGrid{
-		Cursor::Pos().x / CellSize,
-		Cursor::Pos().y / CellSize
+	Point blockPos
+	{
+		(Cursor::Pos().x - HoldOffset.x - BoardOffsetX) / CellSize,
+		(Cursor::Pos().y - HoldOffset.y - BoardOffsetY) / CellSize
 	};
 
 	//ブロックを回転
@@ -87,15 +87,15 @@ void GameScene::update()
 		{
 			bool canPlace = true; //ブロックが重なっているか
 
-			if (0 <= mouseGrid.x && mouseGrid.x < BoardWidth && 0 <= mouseGrid.y && mouseGrid.y < BoardHeight)
+			if (0 <= blockPos.x && blockPos.x < BoardWidth && 0 <= blockPos.y && blockPos.y < BoardHeight)
 			{
 				//配置可能か判定
 				for (const auto& cell : CurrentBlock)
 				{
 					Point pos
 					{
-						mouseGrid.x + cell.x,
-						mouseGrid.y + cell.y
+						blockPos.x + cell.x,
+						blockPos.y + cell.y
 					};
 
 					//盤面外チェック
@@ -119,8 +119,8 @@ void GameScene::update()
 					{
 						Blocks << Point
 						{
-							mouseGrid.x + cell.x,
-							mouseGrid.y + cell.y
+							blockPos.x + cell.x,
+							blockPos.y + cell.y
 						};
 					}
 
