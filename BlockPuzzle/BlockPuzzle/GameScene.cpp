@@ -11,27 +11,17 @@ GameScene::GameScene(const InitData& init)
 		const int index = Random<int>(0, static_cast<int>(BlockShapes.size() - 1));
 		CurrentBlocks << BlockShapes[index];
 	}
-	CurrentBlock = CurrentBlocks[0];
 }
 
 void GameScene::update()
 {
-	bool touched = false;
-
 	//マウスの座標
 	Point mouseGrid{
 		Cursor::Pos().x / CellSize,
 		Cursor::Pos().y / CellSize
 	};
 
-
-	Point blockPos
-	{
-		(Cursor::Pos().x - HoldOffset.x) / CellSize,
-		(Cursor::Pos().y - HoldOffset.y) / CellSize
-	};
-
-	//ブロックを回転したとき
+	//ブロックを回転
 	if (isHolding&&MouseR.down())
 	{
 		Array<Point> rotated;//回転データ
@@ -57,7 +47,7 @@ void GameScene::update()
 		CurrentBlock = rotated;
 	}
 
-	//ブロックを取得した時
+	//ブロックを取得
 	if (!isHolding)
 	{
 		for (int i = 0; i < CurrentBlocks.size(); i++)
@@ -92,11 +82,14 @@ void GameScene::update()
 	}
 	else
 	{
+		//ブロックを配置
 		if (MouseL.up())
 		{
 			bool canPlace = true; //ブロックが重なっているか
+
 			if (0 <= mouseGrid.x && mouseGrid.x < BoardWidth && 0 <= mouseGrid.y && mouseGrid.y < BoardHeight)
 			{
+				//配置可能か判定
 				for (const auto& cell : CurrentBlock)
 				{
 					Point pos
@@ -105,6 +98,14 @@ void GameScene::update()
 						mouseGrid.y + cell.y
 					};
 
+					//盤面外チェック
+					if (pos.x < 0 || pos.x >= BoardWidth || pos.y < 0 || pos.y >= BoardHeight)
+					{
+						canPlace = false;
+						break;
+					}
+
+					//重なりチェック
 					if (Blocks.contains(pos))
 					{
 						canPlace = false;
@@ -132,10 +133,7 @@ void GameScene::update()
 					
 				
 
-				// 新しいブロック生成
-
-				
-
+				// ３つのブロックを使い終わったか
 				bool allEmpty = true;
 
 				for (const auto& block : CurrentBlocks)
@@ -147,6 +145,7 @@ void GameScene::update()
 					}
 				}
 
+				//新しいブロック生成
 				if (allEmpty)
 				{
 					CurrentBlocks.clear();
