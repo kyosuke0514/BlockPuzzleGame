@@ -17,8 +17,8 @@ void GameScene::update()
 {
 	Point blockPos
 	{
-		(Cursor::Pos().x - HoldOffset.x - BoardOffsetX) / CellSize,
-		(Cursor::Pos().y - HoldOffset.y - BoardOffsetY) / CellSize
+		(Cursor::Pos().x - HoldOffset.x) / CellSize,
+		(Cursor::Pos().y - HoldOffset.y) / CellSize
 	};
 
 	//ブロックを回転
