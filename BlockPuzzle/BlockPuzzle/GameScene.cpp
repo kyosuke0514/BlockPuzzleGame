@@ -15,10 +15,16 @@ GameScene::GameScene(const InitData& init)
 
 void GameScene::update()
 {
+	const int BoardPixelW = BoardWidth * CellSize;
+	const int BoardPixelH = BoardHeight * CellSize;
+
+	const int BoardOffsetX = (Scene::Width() - BoardPixelW) / 2;
+	const int BoardOffsetY = (Scene::Height() - BoardPixelH) / 2;
+
 	Point blockPos
 	{
-		(Cursor::Pos().x - HoldOffset.x) / CellSize,
-		(Cursor::Pos().y - HoldOffset.y) / CellSize
+		(Cursor::Pos().x - HoldOffset.x - BoardOffsetX) / CellSize,
+		(Cursor::Pos().y - HoldOffset.y - BoardOffsetY) / CellSize
 	};
 
 	//ブロックを回転
@@ -226,6 +232,12 @@ void GameScene::update()
 
 void GameScene::draw() const
 {
+	const int BoardPixelW = BoardWidth * CellSize;
+	const int BoardPixelH = BoardHeight * CellSize;
+
+	const int BoardOffsetX = (Scene::Width() - BoardPixelW) / 2;
+	const int BoardOffsetY = (Scene::Height() - BoardPixelH) / 2;
+
 	//基盤表示
 	for (int y = 0; y < BoardHeight; ++y)
 	{
@@ -233,8 +245,8 @@ void GameScene::draw() const
 		{
 			Rect rect
 			(
-				x * CellSize,
-				y * CellSize,
+				BoardOffsetX + x * CellSize,
+				BoardOffsetY + y * CellSize,
 				CellSize,
 				CellSize
 			);
@@ -247,8 +259,8 @@ void GameScene::draw() const
 	{
 		Rect
 		(
-			block.x * CellSize,
-			block.y * CellSize,
+			BoardOffsetX + block.x * CellSize,
+			BoardOffsetY + block.y * CellSize,
 			CellSize,
 			CellSize
 		).draw(Palette::Skyblue);
