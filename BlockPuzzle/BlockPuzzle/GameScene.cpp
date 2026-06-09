@@ -119,6 +119,8 @@ void GameScene::update()
 					}
 				}
 
+				
+
 				if (canPlace)
 				{
 					for (const auto& cell : CurrentBlock)
@@ -176,7 +178,7 @@ void GameScene::update()
 							}
 						}
 
-						if (count == BoardHeight)
+						if (count == BoardWidth)
 						{
 							clearCols << x;
 						}
@@ -232,11 +234,19 @@ void GameScene::update()
 
 void GameScene::draw() const
 {
+	
+
 	const int BoardPixelW = BoardWidth * CellSize;
 	const int BoardPixelH = BoardHeight * CellSize;
 
 	const int BoardOffsetX = (Scene::Width() - BoardPixelW) / 2;
 	const int BoardOffsetY = (Scene::Height() - BoardPixelH) / 2;
+
+	Point blockPos
+	{
+		(Cursor::Pos().x - HoldOffset.x - BoardOffsetX) / CellSize,
+		(Cursor::Pos().y - HoldOffset.y - BoardOffsetY) / CellSize
+	};
 
 	//基盤表示
 	for (int y = 0; y < BoardHeight; ++y)
@@ -266,6 +276,32 @@ void GameScene::draw() const
 		).draw(Palette::Skyblue);
 	}
 
+	//置かれる予定の位置が光る
+	if (isHolding)
+	{
+
+		for (const auto& cell : CurrentBlock)
+		{
+			Point pos
+			{
+				blockPos.x + cell.x,
+				blockPos.y + cell.y
+			};
+
+			// ボード内だけ描画
+			if (0 <= pos.x && pos.x < BoardWidth
+			 && 0 <= pos.y && pos.y < BoardHeight)
+			{
+				Rect
+				(
+					BoardOffsetX + pos.x * CellSize,
+					BoardOffsetY + pos.y * CellSize,
+					CellSize,
+					CellSize
+				).drawFrame(4, Palette::Yellow);
+			}
+		}
+	}
 	//3個ブロック表示
 	for (int i = 0; i<CurrentBlocks.size(); i++)
 	{
