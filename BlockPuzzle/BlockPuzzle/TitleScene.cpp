@@ -4,15 +4,22 @@
 TitleScene::TitleScene(const InitData& init)
 	: IScene{ init }
 {
+	const Vec2 center = Scene::Center();
+
+	m_startButton = RoundRect{ Arg::center(center.x, center.y), 300, 60, 8 };
+	m_rankingButton = RoundRect{ Arg::center(center.x, center.y + 100), 300, 60, 8 };
+	m_exitButton = RoundRect{ Arg::center(center.x, center.y + 200), 300, 60, 8 };
 }
 
 void TitleScene::update()
 {
 	// ボタンの更新
 	{
-		m_startTransition.update(m_startButton.mouseOver());
-		m_rankingTransition.update(m_rankingButton.mouseOver());
-		m_exitTransition.update(m_exitButton.mouseOver());
+		const Vec2 center = Scene::Center();
+
+		m_startButton.setCenter(center);
+		m_rankingButton.setCenter(center + Vec2{ 0,100 });
+		m_exitButton.setCenter(center + Vec2{ 0, 200 });
 
 		//マウスカーソルを手の形にする
 		if (m_startButton.mouseOver() || m_rankingButton.mouseOver() || m_exitButton.mouseOver())
@@ -40,9 +47,16 @@ void TitleScene::draw() const
 {
 	Scene::SetBackground(ColorF{ 0.2, 0.6, 1.0 });
 
+	const Vec2 center = Scene::Center();
+
 	// タイトル描画
 	FontAsset(U"TitleFont")(U"BlockPuzzle")
-		.drawAt(TextStyle::OutlineShadow(0.2, ColorF{ 0.0, 0.0, 0.0 }, Vec2{ 3, 3 }, ColorF{ 0.0, 0.5 }), 100, Vec2{ 400, 100 + Sin(Scene::Time() * 2) * 10 });
+		.drawAt(
+			TextStyle::OutlineShadow(0.2, ColorF{ 0.0, 0.0, 0.0 },
+				Vec2{ 3, 3 }, ColorF{ 0.0, 0.5 }),
+			100,
+			Vec2{ center.x, 150 + Sin(Scene::Time() * 2) * 10 }
+		);
 
 	// ボタン描画
 	{

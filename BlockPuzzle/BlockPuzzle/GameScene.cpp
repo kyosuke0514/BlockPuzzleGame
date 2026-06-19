@@ -17,12 +17,15 @@ GameScene::GameScene(const InitData& init)
 
 void GameScene::update()
 {
+	//盤面の大きさ
 	const int BoardPixelW = BoardWidth * CellSize;
 	const int BoardPixelH = BoardHeight * CellSize;
 
+	//真ん中に置くためのズレ計算
 	const int BoardOffsetX = (Scene::Width() - BoardPixelW) / 2;
 	const int BoardOffsetY = (Scene::Height() - BoardPixelH) / 2;
 
+	//今マウスがどのマスの上にあるかの計算
 	Point blockPos
 	{
 		(Cursor::Pos().x - HoldOffset.x - BoardOffsetX) / CellSize,
@@ -235,12 +238,15 @@ void GameScene::update()
 
 void GameScene::draw() const
 {
+	//盤面の大きさ
 	const int BoardPixelW = BoardWidth * CellSize;
 	const int BoardPixelH = BoardHeight * CellSize;
 
+	//真ん中に置くためのズレ計算
 	const int BoardOffsetX = (Scene::Width() - BoardPixelW) / 2;
 	const int BoardOffsetY = (Scene::Height() - BoardPixelH) / 2;
 
+	//今マウスがどのマスの上にあるかの計算
 	Point blockPos
 	{
 		(Cursor::Pos().x - HoldOffset.x - BoardOffsetX) / CellSize,
@@ -275,7 +281,6 @@ void GameScene::draw() const
 	//置かれる予定の位置が光る
 	if (isHolding)
 	{
-
 		for (const auto& cell : CurrentBlock)
 		{
 			Point pos
