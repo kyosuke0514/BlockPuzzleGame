@@ -4,7 +4,7 @@
 //共通基盤データ
 constexpr int BoardWidth = 10;
 constexpr int BoardHeight = 10;
-constexpr int CellSize = 40;
+constexpr int CellSize = 64;
 
 //シーンのステート
 enum class State

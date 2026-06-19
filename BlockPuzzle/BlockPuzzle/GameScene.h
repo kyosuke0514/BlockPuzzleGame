@@ -17,10 +17,23 @@ private:
 	Point CurrentBlockPos = { 12,3 };//操作中ブロック
 	Point HoldOffset;//どこをつかむか
 	Array<Point> CurrentBlock = {};// 現在のブロック形
+	Array<Texture> GemTextures
+	{
+		Texture{ U"PuzzleSozai/BlockBlack.png" },
+		Texture{ U"PuzzleSozai/BlockBlue.png" },
+		Texture{ U"PuzzleSozai/BlockLightBlue.png" },
+		Texture{ U"PuzzleSozai/BlockGreen.png" },
+		Texture{ U"PuzzleSozai/BlockForestGreen.png" },
+		Texture{ U"PuzzleSozai/BlockRed.png" },
+		Texture{ U"PuzzleSozai/BlockOrange.png" },
+		Texture{ U"PuzzleSozai/BlockYellow.png" },
+		Texture{ U"PuzzleSozai/BlockViolet.png" },
+		Texture{ U"PuzzleSozai/BlockPurple.png" },
+		Texture{ U"PuzzleSozai/BlockGray.png" }
+	};
 
 	Array<Array<Point>>CurrentBlocks;
 	int SelectedBlock = -1;
-
 	Array<Array<Point>> BlockShapes =
 	{
 		// 1マス

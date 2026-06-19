@@ -1,4 +1,5 @@
 ﻿#include "GameScene.h"
+#include "Block.h"
 #include "Common.h"
 #include <Siv3D.hpp>
 
@@ -11,6 +12,7 @@ GameScene::GameScene(const InitData& init)
 		const int index = Random<int>(0, static_cast<int>(BlockShapes.size() - 1));
 		CurrentBlocks << BlockShapes[index];
 	}
+	
 }
 
 void GameScene::update()
@@ -58,14 +60,15 @@ void GameScene::update()
 	{
 		for (int i = 0; i < CurrentBlocks.size(); i++)
 		{
-			Point previewPos{ 12, 3 + i * 5 };
+			const int PreviewX = BoardOffsetX + BoardPixelW + 50;
+			const int PreviewY = BoardOffsetY + 50 + i * 180;
 
 			for (const auto& cell : CurrentBlocks[i])
 			{
 				Rect rect
 				(
-					(previewPos.x + cell.x) * CellSize,
-					(previewPos.y + cell.y) * CellSize,
+					PreviewX + cell.x * CellSize,
+					PreviewY + cell.y * CellSize,
 					CellSize,
 					CellSize
 				);
@@ -79,8 +82,8 @@ void GameScene::update()
 
 					HoldOffset =
 					{
-						Cursor::Pos().x - previewPos.x * CellSize,
-						Cursor::Pos().y - previewPos.y * CellSize
+						Cursor::Pos().x - (PreviewX + cell.x * CellSize),
+						Cursor::Pos().y - (PreviewY + cell.y * CellSize)
 					};
 				}
 			}
@@ -118,8 +121,6 @@ void GameScene::update()
 						break;
 					}
 				}
-
-				
 
 				if (canPlace)
 				{
@@ -234,8 +235,6 @@ void GameScene::update()
 
 void GameScene::draw() const
 {
-	
-
 	const int BoardPixelW = BoardWidth * CellSize;
 	const int BoardPixelH = BoardHeight * CellSize;
 
@@ -267,13 +266,10 @@ void GameScene::draw() const
 	//既存ブロック表示
 	for (const auto& block : Blocks)
 	{
-		Rect
-		(
+		GemTextures[0].scaled(4.0).draw(
 			BoardOffsetX + block.x * CellSize,
-			BoardOffsetY + block.y * CellSize,
-			CellSize,
-			CellSize
-		).draw(Palette::Skyblue);
+			BoardOffsetY + block.y * CellSize
+		);
 	}
 
 	//置かれる予定の位置が光る
@@ -315,17 +311,15 @@ void GameScene::draw() const
 			continue;
 		}
 
-		Point previewPos{ 12, 3 + i * 5 };
+		const int PreviewX = BoardOffsetX + BoardPixelW + 50;
+		const int PreviewY = BoardOffsetY + 50 + i * 180;
 
 		for (const auto& cell : CurrentBlocks[i])
 		{
-			Rect
-			(
-				(previewPos.x + cell.x) * CellSize,
-				(previewPos.y + cell.y) * CellSize,
-				CellSize,
-				CellSize
-			).draw(Palette::Orange);
+			GemTextures[0].scaled(4.0).draw(
+				PreviewX + cell.x * CellSize,
+				PreviewY + cell.y * CellSize
+			);
 		}
 	}
 
@@ -349,13 +343,10 @@ void GameScene::draw() const
 				Cursor::Pos().y - HoldOffset.y + cell.y * CellSize
 			};
 		}
-		Rect
-		(
-			drawPos.x,
-			drawPos.y,
-			CellSize,
-			CellSize
-		).draw(Palette::Skyblue);
+		GemTextures[0].scaled(4.0).draw(
+		drawPos.x,
+		drawPos.y
+		);
 	}
 }
 
