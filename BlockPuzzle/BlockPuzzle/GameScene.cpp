@@ -254,26 +254,14 @@ void GameScene::draw() const
 	};
 
 	//基盤表示
-	for (int y = 0; y < BoardHeight; ++y)
-	{
-		for (int x = 0; x < BoardWidth; ++x)
-		{
-			Rect rect
-			(
-				BoardOffsetX + x * CellSize,
-				BoardOffsetY + y * CellSize,
-				CellSize,
-				CellSize
-			);
-			rect.drawFrame(1, Palette::Black);
-		}
-	}
+	BoardTexture.draw(BoardOffsetX, BoardOffsetY);
 
 	//既存ブロック表示
 	for (const auto& block : Blocks)
 	{
 		GemTextures[0].scaled(4.0).draw(
 			BoardOffsetX + block.x * CellSize,
+
 			BoardOffsetY + block.y * CellSize
 		);
 	}

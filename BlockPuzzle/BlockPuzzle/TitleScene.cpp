@@ -45,7 +45,7 @@ void TitleScene::update()
 
 void TitleScene::draw() const
 {
-	Scene::SetBackground(ColorF{ 0.2, 0.6, 1.0 });
+	Scene::SetBackground(ColorF{ 0.059, 0.090, 0.165 });
 
 	const Vec2 center = Scene::Center();
 
