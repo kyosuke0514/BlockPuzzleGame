@@ -6,38 +6,35 @@ TitleScene::TitleScene(const InitData& init)
 {
 	const Vec2 center = Scene::Center();
 
-	m_startButton = RoundRect{ Arg::center(center.x, center.y), 300, 60, 8 };
-	m_rankingButton = RoundRect{ Arg::center(center.x, center.y + 100), 300, 60, 8 };
-	m_exitButton = RoundRect{ Arg::center(center.x, center.y + 200), 300, 60, 8 };
+	m_startButton = RoundRect{ Arg::center(center.x, center.y+50), 300, 60, 8 };
+	m_rankingButton = RoundRect{ Arg::center(center.x, center.y +200), 300, 60, 8 };
+	m_exitButton = RoundRect{ Arg::center(center.x, center.y + 350), 300, 60, 8 };
 }
 
 void TitleScene::update()
 {
-	// ボタンの更新
+	const Vec2 center = Scene::Center();
+
+	m_startTransition.update(m_startButton.mouseOver());
+	m_rankingTransition.update(m_rankingButton.mouseOver());
+	m_exitTransition.update(m_exitButton.mouseOver());
+
+	//マウスカーソルを手の形にする
+	if (m_startButton.mouseOver() || m_rankingButton.mouseOver() || m_exitButton.mouseOver())
 	{
-		const Vec2 center = Scene::Center();
-
-		m_startButton.setCenter(center);
-		m_rankingButton.setCenter(center + Vec2{ 0,100 });
-		m_exitButton.setCenter(center + Vec2{ 0, 200 });
-
-		//マウスカーソルを手の形にする
-		if (m_startButton.mouseOver() || m_rankingButton.mouseOver() || m_exitButton.mouseOver())
-		{
-			Cursor::RequestStyle(CursorStyle::Hand);
-		}
+		Cursor::RequestStyle(CursorStyle::Hand);
 	}
-
-	// ボタンのクリック処理
-	if (m_startButton.leftClicked()) // ゲームへ
+	
+	//ボタンのクリック処理
+	if (m_startButton.leftClicked())//ゲームへ
 	{
 		changeScene(State::Game);
 	}
-	else if (m_rankingButton.leftClicked()) // ランキングへ
+	else if (m_rankingButton.leftClicked())//ランキングへ
 	{
 		changeScene(State::Ranking);
 	}
-	else if (m_exitButton.leftClicked()) // 終了
+	else if (m_exitButton.leftClicked())//終了
 	{
 		System::Exit();
 	}
@@ -45,29 +42,38 @@ void TitleScene::update()
 
 void TitleScene::draw() const
 {
+	//背景
 	Scene::SetBackground(ColorF{ 0.059, 0.090, 0.165 });
 
+	//画面中央
 	const Vec2 center = Scene::Center();
 
-	// タイトル描画
-	FontAsset(U"TitleFont")(U"BlockPuzzle")
-		.drawAt(
-			TextStyle::OutlineShadow(0.2, ColorF{ 0.0, 0.0, 0.0 },
-				Vec2{ 3, 3 }, ColorF{ 0.0, 0.5 }),
-			100,
-			Vec2{ center.x, 150 + Sin(Scene::Time() * 2) * 10 }
-		);
+	//タイトル画像
+	TitleTexture.scaled(1.5).drawAt(center.x, 300);
 
-	// ボタン描画
+	//ホバー時に拡大
+	const double startScale =0.5 + m_startTransition.value() * 0.1;
+	const double rankingScale =0.5 + m_rankingTransition.value() * 0.1;
+	const double exitScale =0.5 + m_exitTransition.value() * 0.1;
+
+	//ボタン画像
+	PlayTexture.scaled(startScale).drawAt(m_startButton.center());
+	RankingTexture.scaled(rankingScale).drawAt(m_rankingButton.center());
+	ExitTexture.scaled(exitScale).drawAt(m_exitButton.center());
+
+	//選択中ブロック
+	if (m_startTransition.value() > 0.0)
 	{
-		//中が白色.枠が黒色のボタン
-		m_startButton.draw(ColorF{ 1.0 }).drawFrame(2, ColorF{ 0.0,0.0,0.0 });
-		m_rankingButton.draw(ColorF{ 1.0 }).drawFrame(2, ColorF{ 0.0,0.0,0.0 });
-		m_exitButton.draw(ColorF{ 1.0 }).drawFrame(2, ColorF{ 0.0,0.0,0.0 });
+		RectF{m_startButton.x - 60,m_startButton.center().y - 15,30,30}.draw(ColorF{ 0.3,0.7,1.0 });
+	}
 
-		const Font& boldFont = FontAsset(U"Bold");
-		boldFont(U"プレイ").drawAt(36, m_startButton.center(), ColorF{ 0.1 });
-		boldFont(U"ランキング").drawAt(36, m_rankingButton.center(), ColorF{ 0.1 });
-		boldFont(U"終了").drawAt(36, m_exitButton.center(), ColorF{ 0.1 });
+	if (m_rankingTransition.value() > 0.0)
+	{
+		RectF{m_rankingButton.x - 60,m_rankingButton.center().y - 15,30,30}.draw(ColorF{ 0.4,1.0,0.5 });
+	}
+
+	if (m_exitTransition.value() > 0.0)
+	{
+		RectF{m_exitButton.x - 60,m_exitButton.center().y - 15,30,30}.draw(ColorF{ 1.0,0.5,0.5 });
 	}
 }
