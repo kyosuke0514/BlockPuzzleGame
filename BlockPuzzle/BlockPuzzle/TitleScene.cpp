@@ -7,8 +7,8 @@ TitleScene::TitleScene(const InitData& init)
 	const Vec2 center = Scene::Center();
 
 	m_startButton = RoundRect{ Arg::center(center.x, center.y+50), 300, 60, 8 };
-	m_rankingButton = RoundRect{ Arg::center(center.x, center.y +200), 300, 60, 8 };
-	m_exitButton = RoundRect{ Arg::center(center.x, center.y + 350), 300, 60, 8 };
+	m_rankingButton = RoundRect{ Arg::center(center.x, center.y +150), 300, 60, 8 };
+	m_exitButton = RoundRect{ Arg::center(center.x, center.y + 250), 300, 60, 8 };
 }
 
 void TitleScene::update()
@@ -43,8 +43,8 @@ void TitleScene::update()
 void TitleScene::draw() const
 {
 	//背景
-	Scene::SetBackground(ColorF{ 0.059, 0.090, 0.165 });
-
+	//Scene::SetBackground(ColorF{ 0.059, 0.090, 0.165 });
+	Scene::SetBackground(ColorF{ 1.0, 1.0, 1.0 });
 	//画面中央
 	const Vec2 center = Scene::Center();
 

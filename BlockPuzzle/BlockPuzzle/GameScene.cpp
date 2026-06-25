@@ -12,14 +12,13 @@ GameScene::GameScene(const InitData& init)
 		const int index = Random<int>(0, static_cast<int>(BlockShapes.size() - 1));
 		CurrentBlocks << BlockShapes[index];
 	}
-	
 }
 
 void GameScene::update()
 {
 	//盤面の大きさ
-	const int BoardPixelW = BoardWidth * CellSize;
-	const int BoardPixelH = BoardHeight * CellSize;
+	const int BoardPixelW = BoardWidth * CellSize + (BoardWidth - 1) * GridSize + 8;
+	const int BoardPixelH = BoardHeight * CellSize + (BoardHeight - 1) * GridSize + 8;
 
 	//真ん中に置くためのズレ計算
 	const int BoardOffsetX = (Scene::Width() - BoardPixelW) / 2;
@@ -239,8 +238,8 @@ void GameScene::update()
 void GameScene::draw() const
 {
 	//盤面の大きさ
-	const int BoardPixelW = BoardWidth * CellSize;
-	const int BoardPixelH = BoardHeight * CellSize;
+	const int BoardPixelW = BoardWidth * CellSize + (BoardWidth - 1) * GridSize + 8;
+	const int BoardPixelH = BoardHeight * CellSize + (BoardHeight - 1) * GridSize + 8;
 
 	//真ん中に置くためのズレ計算
 	const int BoardOffsetX = (Scene::Width() - BoardPixelW) / 2;
@@ -249,20 +248,19 @@ void GameScene::draw() const
 	//今マウスがどのマスの上にあるかの計算
 	Point blockPos
 	{
-		(Cursor::Pos().x - HoldOffset.x - BoardOffsetX) / CellSize,
-		(Cursor::Pos().y - HoldOffset.y - BoardOffsetY) / CellSize
+		(Cursor::Pos().x - HoldOffset.x - BoardOffsetX - 4) / CellPitch,
+		(Cursor::Pos().y - HoldOffset.y - BoardOffsetY - 4) / CellPitch
 	};
 
 	//基盤表示
-	BoardTexture.draw(BoardOffsetX, BoardOffsetY);
+	Board2Texture.draw(BoardOffsetX, BoardOffsetY);
 
 	//既存ブロック表示
 	for (const auto& block : Blocks)
 	{
-		GemTextures[0].scaled(4.0).draw(
-			BoardOffsetX + block.x * CellSize,
-
-			BoardOffsetY + block.y * CellSize
+		GemTextures[1].scaled(4.0).draw(
+			BoardOffsetX + 4 + block.x * CellPitch,
+			BoardOffsetY + 4 + block.y * CellPitch
 		);
 	}
 
@@ -283,8 +281,8 @@ void GameScene::draw() const
 			{
 				Rect
 				(
-					BoardOffsetX + pos.x * CellSize,
-					BoardOffsetY + pos.y * CellSize,
+					BoardOffsetX + 4 + pos.x * CellPitch,
+					BoardOffsetY + 4 + pos.y * CellPitch,
 					CellSize,
 					CellSize
 				).drawFrame(4, Palette::Yellow);
@@ -309,7 +307,7 @@ void GameScene::draw() const
 
 		for (const auto& cell : CurrentBlocks[i])
 		{
-			GemTextures[0].scaled(4.0).draw(
+			GemTextures[1].scaled(4.0).draw(
 				PreviewX + cell.x * CellSize,
 				PreviewY + cell.y * CellSize
 			);
@@ -336,7 +334,7 @@ void GameScene::draw() const
 				Cursor::Pos().y - HoldOffset.y + cell.y * CellSize
 			};
 		}
-		GemTextures[0].scaled(4.0).draw(
+		GemTextures[1].scaled(4.0).draw(
 		drawPos.x,
 		drawPos.y
 		);

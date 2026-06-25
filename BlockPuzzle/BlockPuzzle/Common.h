@@ -2,9 +2,11 @@
 #include <Siv3D.hpp>
 
 //共通基盤データ
-constexpr int BoardWidth = 10;
-constexpr int BoardHeight = 10;
-constexpr int CellSize = 64;
+constexpr int BoardWidth = 10;//マスの幅
+constexpr int BoardHeight = 10;//マスの高さ
+constexpr int CellSize = 64;//マス１個の大きさ
+constexpr int GridSize = 2;//マスとマスの線の太さ
+constexpr int CellPitch = 66;//次のマスまでの間隔
 
 //シーンのステート
 enum class State

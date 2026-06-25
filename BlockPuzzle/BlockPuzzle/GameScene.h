@@ -32,6 +32,8 @@ private:
 		Texture{ U"PuzzleSozai/BlockGray.png" }
 	};
 	Texture BoardTexture{ U"PuzzleSozai/Board.png" };
+	Texture Board1Texture{ U"PuzzleSozai/Board1.png" };
+	Texture Board2Texture{ U"PuzzleSozai/Board2.png" };
 	Array<Array<Point>>CurrentBlocks;
 	int SelectedBlock = -1;
 	Array<Array<Point>> BlockShapes =
