@@ -1,4 +1,5 @@
 ﻿#include "TitleScene.h"
+#include <Siv3D.hpp>
 
 
 TitleScene::TitleScene(const InitData& init)
@@ -18,6 +19,9 @@ void TitleScene::update()
 	m_startTransition.update(m_startButton.mouseOver());
 	m_rankingTransition.update(m_rankingButton.mouseOver());
 	m_exitTransition.update(m_exitButton.mouseOver());
+
+	
+
 
 	//マウスカーソルを手の形にする
 	if (m_startButton.mouseOver() || m_rankingButton.mouseOver() || m_exitButton.mouseOver())
@@ -43,13 +47,18 @@ void TitleScene::update()
 void TitleScene::draw() const
 {
 	//背景
-	//Scene::SetBackground(ColorF{ 0.059, 0.090, 0.165 });
-	Scene::SetBackground(ColorF{ 1.0, 1.0, 1.0 });
+	BackTexture.drawAt(Scene::Center());
+
 	//画面中央
 	const Vec2 center = Scene::Center();
 
+	double alpha = Periodic::Sine0_1(3s);
+
 	//タイトル画像
+	STexture.scaled(1.5).drawAt(center.x +365, 315, ColorF{ 1.0,alpha });
+	LTexture.scaled(1.5).drawAt(center.x -380, 300,ColorF{1.0,alpha });
 	TitleTexture.scaled(1.5).drawAt(center.x, 300);
+	CTexture.scaled(1.5).drawAt(center.x + 15, 320, ColorF{ 1.0,alpha });
 
 	//ホバー時に拡大
 	const double startScale =0.5 + m_startTransition.value() * 0.1;
