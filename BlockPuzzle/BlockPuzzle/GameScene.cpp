@@ -252,13 +252,15 @@ void GameScene::draw() const
 		(Cursor::Pos().y - HoldOffset.y - BoardOffsetY - 4) / CellPitch
 	};
 
+	BackTexture.drawAt(Scene::Center());
+
 	//基盤表示
 	Board2Texture.draw(BoardOffsetX, BoardOffsetY);
 
 	//既存ブロック表示
 	for (const auto& block : Blocks)
 	{
-		GemTextures[1].scaled(4.0).draw(
+		GemTextures[10].scaled(4.0).draw(
 			BoardOffsetX + 4 + block.x * CellPitch,
 			BoardOffsetY + 4 + block.y * CellPitch
 		);
@@ -307,7 +309,7 @@ void GameScene::draw() const
 
 		for (const auto& cell : CurrentBlocks[i])
 		{
-			GemTextures[1].scaled(4.0).draw(
+			GemTextures[10].scaled(4.0).draw(
 				PreviewX + cell.x * CellSize,
 				PreviewY + cell.y * CellSize
 			);
@@ -334,7 +336,7 @@ void GameScene::draw() const
 				Cursor::Pos().y - HoldOffset.y + cell.y * CellSize
 			};
 		}
-		GemTextures[1].scaled(4.0).draw(
+		GemTextures[10].scaled(4.0).draw(
 		drawPos.x,
 		drawPos.y
 		);

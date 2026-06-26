@@ -8,11 +8,6 @@ void Main()
 	//画面サイズ
 	Window::Resize(1920, 1080);
 
-	//各フォント
-	FontAsset::Register(U"TitleFont", FontMethod::MSDF, 48, U"example/font/RocknRoll/RocknRollOne-Regular.ttf");
-	FontAsset(U"TitleFont").setBufferThickness(4);
-	FontAsset::Register(U"Bold", FontMethod::MSDF, 48, Typeface::Bold);
-
 	//各シーン
 	App manager;
 	manager.add<TitleScene>(State::Title);
