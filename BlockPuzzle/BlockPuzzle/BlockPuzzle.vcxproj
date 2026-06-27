@@ -116,6 +116,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="GameOverScene.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Ranking.cpp" />
@@ -331,6 +332,7 @@
   <ItemGroup>
     <ClInclude Include="Block.h" />
     <ClInclude Include="Common.h" />
+    <ClInclude Include="GameOverScene.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="Ranking.h" />
     <ClInclude Include="stdafx.h" />
