@@ -11,12 +11,14 @@ public:
 
 private:
 	bool isHolding = false;//ブロックを持つか
+	bool CanPlaceBlock(const Array<Point>& block) const;
 	Array<Point> Blocks;//ブロックデータ
 	Array<Array<int>>board;//盤面データ
 	Point SpawnPos = { 12,3 };//生成位置
 	Point CurrentBlockPos = { 12,3 };//操作中ブロック
 	Point HoldOffset;//どこをつかむか
 	Array<Point> CurrentBlock = {};// 現在のブロック形
+	
 	Array<Texture> GemTextures
 	{
 		Texture{ U"PuzzleSozai/BlockBlack.png" },

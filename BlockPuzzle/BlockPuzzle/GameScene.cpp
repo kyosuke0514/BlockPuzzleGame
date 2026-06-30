@@ -343,4 +343,37 @@ void GameScene::draw() const
 	}
 }
 
+bool GameScene::CanPlaceBlock(const Array<Point>& block) const
+{
+	for (int y = 0; y < BoardHeight; y++)
+	{
+		for (int x = 0; x < BoardWidth; x++)
+		{
+			bool canPlace = true;
+			for (const auto& cell : block)
+			{
+				Point pos{ x + cell.x,y + cell.y };
+
+				if (pos.x < 0 || pos.x >= BoardWidth || pos.y < 0 || pos.y >= BoardHeight)
+				{
+					canPlace = false;
+					break;
+				}
+
+				if (Blocks.contains(pos))
+				{
+					canPlace = false;
+					break;
+				}
+			}
+
+			if (canPlace)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 

@@ -14,6 +14,7 @@ enum class State
 	Title,
 	Game,
 	Ranking,
+	GameOver
 };
 
 //共有するデータ
