@@ -137,6 +137,8 @@ void GameScene::update()
 
 					//横１列揃ったら消える
 					Array<int>clearRows;
+					//縦１列揃ったら消える
+					Array<int> clearCols;
 
 					for (int y = 0; y < BoardHeight; y++)
 					{
@@ -154,21 +156,6 @@ void GameScene::update()
 							clearRows << y;
 						}
 					}
-
-					for (int row : clearRows)
-					{
-						for (int i = static_cast<int>(Blocks.size()) - 1; i >= 0; --i)
-						{
-							if (Blocks[i].y == row)
-							{
-								Blocks.erase(Blocks.begin() + i);
-							}
-						}
-					}
-
-					//縦１列揃ったら消える
-					Array<int> clearCols;
-
 					for (int x = 0; x < BoardWidth; x++)
 					{
 						int count = 0;
@@ -187,15 +174,20 @@ void GameScene::update()
 						}
 					}
 
-					for (int col : clearCols)
+					for (int i = static_cast<int>(Blocks.size()) - 1; i >= 0; i--)
 					{
-						for (int i = static_cast<int>(Blocks.size()) - 1; i >= 0; --i)
+						if (clearRows.contains(Blocks[i].y) || clearCols.contains(Blocks[i].x))
 						{
-							if (Blocks[i].x == col)
-							{
-								Blocks.erase(Blocks.begin() + i);
-							}
+							Blocks.erase(Blocks.begin() + i);
 						}
+					}
+
+					int clearCount = clearRows.size() + clearCols.size();
+
+					//消したら1列につき１００点
+					if (clearCount > 0)
+					{
+						getData().Score += clearCount * 100;
 					}
 
 					//使い終わったブロックを消す
@@ -204,6 +196,7 @@ void GameScene::update()
 					SelectedBlock = -1;
 
 					isHolding = false;
+
 				}
 					
 				// ３つのブロックを使い終わったか
@@ -229,6 +222,23 @@ void GameScene::update()
 						(0,static_cast<int>(BlockShapes.size() - 1));
 						CurrentBlocks << BlockShapes[index];
 					}
+				}
+
+				bool canPlaceAny = false;
+
+				for (const auto& block : CurrentBlocks)
+				{
+					if (CanPlaceBlock(block))
+					{
+						canPlaceAny = true;
+						break;
+					}
+				}
+
+				if (!canPlaceAny)
+				{
+					getData().lastScore = getData().Score;
+					changeScene(State::GameOver);
 				}
 			}
 		}
@@ -256,6 +266,25 @@ void GameScene::draw() const
 
 	//基盤表示
 	Board2Texture.draw(BoardOffsetX, BoardOffsetY);
+
+	//スコア画像
+	ScoreTexture.draw(40, 40);
+
+	//数字画像
+	const int DigitW = 64;
+	const int DigitH = 128;
+
+	String score = Format(getData().Score);
+
+	for (size_t i = 0; i < score.size(); i++)
+	{
+		int num = score[i] - U'0';
+
+		NumberTexture(Rect(num * DigitW, 0, DigitW, DigitH))
+			.scaled(0.5)
+			.draw(50+i * 64, 50);
+	}
+
 
 	//既存ブロック表示
 	for (const auto& block : Blocks)
