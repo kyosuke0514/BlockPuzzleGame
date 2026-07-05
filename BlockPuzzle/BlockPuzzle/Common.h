@@ -20,7 +20,9 @@ enum class State
 //共有するデータ
 struct GameData
 {
+	//スコア
 	int32 Score = 0;
+
 	//直前のゲームのスコア
 	int32 lastScore = 0;
 
