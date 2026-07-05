@@ -21,14 +21,15 @@ class Block
 {
 public:
 	Block();
+	Block(const Array<Point>& shape);
 	void update();
-	void draw();
+	void draw(const Point& drawPos) const;
 
 	Array<Point>shape;
 	Point pos;
-	int color = 0;
+	int color = 10;
 
 private:
-
+	static Array<Texture> GemTextures;
 };
 

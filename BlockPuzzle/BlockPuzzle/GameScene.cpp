@@ -3,8 +3,7 @@
 #include "Common.h"
 #include <Siv3D.hpp>
 
-GameScene::GameScene(const InitData& init)
-	: IScene{ init }
+GameScene::GameScene(const InitData& init) : IScene{ init }
 {
 	board = Array<Array<int>>(BoardHeight, Array<int>(BoardWidth, 0));
 	for (int i = 0; i < 3; i++)
@@ -36,14 +35,14 @@ void GameScene::update()
 	{
 		Array<Point> rotated;//回転データ
 		Vec2 center(0, 0);
-		for (const auto& cell : CurrentBlock)
+		for (const auto& cell : CurrentBlock.shape)
 		{
 			center += Vec2(cell);
 		}
 
-		center /= CurrentBlock.size();
+		center /= CurrentBlock.shape.size();
 
-		for (const auto& cell : CurrentBlock)
+		for (const auto& cell : CurrentBlock.shape)
 		{
 			double relX = cell.x - center.x;
 			double relY = cell.y - center.y;
@@ -65,7 +64,7 @@ void GameScene::update()
 			const int PreviewX = BoardOffsetX + BoardPixelW + 50;
 			const int PreviewY = BoardOffsetY + 50 + i * 180;
 
-			for (const auto& cell : CurrentBlocks[i])
+			for (const auto& cell : CurrentBlocks[i].shape)
 			{
 				Rect rect
 				(
@@ -101,7 +100,7 @@ void GameScene::update()
 			if (0 <= blockPos.x && blockPos.x < BoardWidth && 0 <= blockPos.y && blockPos.y < BoardHeight)
 			{
 				//配置可能か判定
-				for (const auto& cell : CurrentBlock)
+				for (const auto& cell : CurrentBlock.shape)
 				{
 					Point pos
 					{
@@ -126,7 +125,7 @@ void GameScene::update()
 
 				if (canPlace)
 				{
-					for (const auto& cell : CurrentBlock)
+					for (const auto& cell : CurrentBlock.shape)
 					{
 						Blocks << Point
 						{
@@ -191,8 +190,8 @@ void GameScene::update()
 					}
 
 					//使い終わったブロックを消す
-					CurrentBlocks[SelectedBlock].clear();
-					CurrentBlock.clear();
+					CurrentBlocks[SelectedBlock].shape.clear();
+					CurrentBlock.shape.clear();
 					SelectedBlock = -1;
 
 					isHolding = false;
@@ -204,7 +203,7 @@ void GameScene::update()
 
 				for (const auto& block : CurrentBlocks)
 				{
-					if (!block.isEmpty())
+					if (!block.shape.isEmpty())
 					{
 						allEmpty = false;
 						break;
@@ -282,7 +281,7 @@ void GameScene::draw() const
 
 		NumberTexture(Rect(num * DigitW, 0, DigitW, DigitH))
 			.scaled(0.5)
-			.draw(50+i * 64, 50);
+			.draw(50+i * 50, 50);
 	}
 
 
@@ -298,7 +297,7 @@ void GameScene::draw() const
 	//置かれる予定の位置が光る
 	if (isHolding)
 	{
-		for (const auto& cell : CurrentBlock)
+		for (const auto& cell : CurrentBlock.shape)
 		{
 			Point pos
 			{
@@ -323,7 +322,7 @@ void GameScene::draw() const
 	//3個ブロック表示
 	for (int i = 0; i<CurrentBlocks.size(); i++)
 	{
-		if (CurrentBlocks[i].isEmpty())
+		if (CurrentBlocks[i].shape.isEmpty())
 		{
 			continue;
 		}
@@ -336,17 +335,11 @@ void GameScene::draw() const
 		const int PreviewX = BoardOffsetX + BoardPixelW + 50;
 		const int PreviewY = BoardOffsetY + 50 + i * 180;
 
-		for (const auto& cell : CurrentBlocks[i])
-		{
-			GemTextures[10].scaled(4.0).draw(
-				PreviewX + cell.x * CellSize,
-				PreviewY + cell.y * CellSize
-			);
-		}
+		CurrentBlocks[i].draw({ PreviewX, PreviewY });
 	}
 
 	//新規ブロック表示
-	for (const auto& cell : CurrentBlock)
+	for (const auto& cell : CurrentBlock.shape)
 	{
 		Point drawPos;
 		if (!isHolding)
@@ -365,21 +358,18 @@ void GameScene::draw() const
 				Cursor::Pos().y - HoldOffset.y + cell.y * CellSize
 			};
 		}
-		GemTextures[10].scaled(4.0).draw(
-		drawPos.x,
-		drawPos.y
-		);
+		CurrentBlock.draw(drawPos);
 	}
 }
 
-bool GameScene::CanPlaceBlock(const Array<Point>& block) const
+bool GameScene::CanPlaceBlock(const Block& block) const
 {
 	for (int y = 0; y < BoardHeight; y++)
 	{
 		for (int x = 0; x < BoardWidth; x++)
 		{
 			bool canPlace = true;
-			for (const auto& cell : block)
+			for (const auto& cell : block.shape)
 			{
 				Point pos{ x + cell.x,y + cell.y };
 
