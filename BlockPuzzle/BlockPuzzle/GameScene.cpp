@@ -33,27 +33,7 @@ void GameScene::update()
 	//ブロックを回転
 	if (isHolding&&MouseR.down())
 	{
-		Array<Point> rotated;//回転データ
-		Vec2 center(0, 0);
-		for (const auto& cell : CurrentBlock.shape)
-		{
-			center += Vec2(cell);
-		}
-
-		center /= CurrentBlock.shape.size();
-
-		for (const auto& cell : CurrentBlock.shape)
-		{
-			double relX = cell.x - center.x;
-			double relY = cell.y - center.y;
-
-			int newX = static_cast<int>(Round(-relY + center.x));
-			int newY = static_cast<int>(Round(relX + center.y));
-
-			rotated << Point(newX, newY);
-		}
-
-		CurrentBlock = rotated;
+		CurrentBlock.rotate();
 	}
 
 	//ブロックを取得
@@ -116,7 +96,7 @@ void GameScene::update()
 					}
 
 					//重なりチェック
-					if (Blocks.contains(pos))
+					if (board[pos.y][pos.x]==1)
 					{
 						canPlace = false;
 						break;
@@ -127,11 +107,13 @@ void GameScene::update()
 				{
 					for (const auto& cell : CurrentBlock.shape)
 					{
-						Blocks << Point
+						Point pos
 						{
 							blockPos.x + cell.x,
 							blockPos.y + cell.y
 						};
+
+						board[pos.y][pos.x] = 1;
 					}
 
 					//横１列揃ったら消える
@@ -143,14 +125,14 @@ void GameScene::update()
 					{
 						int count = 0;
 
-						for (const auto& block : Blocks)
+						for (int x = 0; x < BoardWidth; x++)
 						{
-							if (block.y == y)
+							if (board[y][x] == 1)
 							{
 								count++;
 							}
 						}
-						if (count == BoardHeight)
+						if (count == BoardWidth)
 						{
 							clearRows << y;
 						}
@@ -159,9 +141,9 @@ void GameScene::update()
 					{
 						int count = 0;
 
-						for (const auto& block : Blocks)
+						for (int y = 0; y < BoardHeight; y++)
 						{
-							if (block.x == x)
+							if (board[y][x] == 1)
 							{
 								count++;
 							}
@@ -173,11 +155,19 @@ void GameScene::update()
 						}
 					}
 
-					for (int i = static_cast<int>(Blocks.size()) - 1; i >= 0; i--)
+					for (int y : clearRows)
 					{
-						if (clearRows.contains(Blocks[i].y) || clearCols.contains(Blocks[i].x))
+						for (int x = 0; x < BoardWidth; x++)
 						{
-							Blocks.erase(Blocks.begin() + i);
+							board[y][x] = 0;
+						}
+					}
+
+					for (int x : clearCols)
+					{
+						for (int y = 0; y < BoardHeight; y++)
+						{
+							board[y][x] = 0;
 						}
 					}
 
@@ -261,6 +251,7 @@ void GameScene::draw() const
 		(Cursor::Pos().y - HoldOffset.y - BoardOffsetY - 4) / CellPitch
 	};
 
+	//背景表示
 	BackTexture.drawAt(Scene::Center());
 
 	//基盤表示
@@ -281,17 +272,23 @@ void GameScene::draw() const
 
 		NumberTexture(Rect(num * DigitW, 0, DigitW, DigitH))
 			.scaled(0.5)
-			.draw(50+i * 50, 50);
+			.draw(50 + i * 50, 50);
 	}
 
 
 	//既存ブロック表示
-	for (const auto& block : Blocks)
+	for (int y = 0; y< BoardHeight; y++)
 	{
-		GemTextures[10].scaled(4.0).draw(
-			BoardOffsetX + 4 + block.x * CellPitch,
-			BoardOffsetY + 4 + block.y * CellPitch
-		);
+		for (int x = 0; x < BoardWidth; x++)
+		{
+			if (board[y][x] == 1)
+			{
+				GemTextures[10].scaled(4.0).draw(
+					BoardOffsetX + 4 + x * CellPitch,
+					BoardOffsetY + 4 + y * CellPitch
+				);
+			}
+		}
 	}
 
 	//置かれる予定の位置が光る
@@ -306,8 +303,7 @@ void GameScene::draw() const
 			};
 
 			// ボード内だけ描画
-			if (0 <= pos.x && pos.x < BoardWidth
-			 && 0 <= pos.y && pos.y < BoardHeight)
+			if (0 <= pos.x && pos.x < BoardWidth&& 0 <= pos.y && pos.y < BoardHeight)
 			{
 				Rect
 				(
@@ -319,6 +315,7 @@ void GameScene::draw() const
 			}
 		}
 	}
+
 	//3個ブロック表示
 	for (int i = 0; i<CurrentBlocks.size(); i++)
 	{
@@ -339,27 +336,47 @@ void GameScene::draw() const
 	}
 
 	//新規ブロック表示
-	for (const auto& cell : CurrentBlock.shape)
+	//for (const auto& cell : CurrentBlock.shape)
+	//{
+	//	Point drawPos;
+	//	if (!isHolding)
+	//	{
+	//		drawPos =
+	//		{
+	//			(CurrentBlockPos.x + cell.x) * CellSize,//ブロック本体の位置＋移動したときの各マスのずれ
+	//			(CurrentBlockPos.y + cell.y) * CellSize
+	//		};
+	//	}
+	//	else
+	//	{
+	//		drawPos =
+	//		{
+	//			Cursor::Pos().x - HoldOffset.x + cell.x * CellSize,
+	//			Cursor::Pos().y - HoldOffset.y + cell.y * CellSize
+	//		};
+	//	}
+	//	CurrentBlock.draw(drawPos);
+	//}
+	Point drawPos;
+
+	if (isHolding)
 	{
-		Point drawPos;
-		if (!isHolding)
+		drawPos =
 		{
-			drawPos =
-			{
-				(CurrentBlockPos.x + cell.x) * CellSize,//ブロック本体の位置＋移動したときの各マスのずれ
-				(CurrentBlockPos.y + cell.y) * CellSize
-			};
-		}
-		else
-		{
-			drawPos =
-			{
-				Cursor::Pos().x - HoldOffset.x + cell.x * CellSize,
-				Cursor::Pos().y - HoldOffset.y + cell.y * CellSize
-			};
-		}
-		CurrentBlock.draw(drawPos);
+			Cursor::Pos().x - HoldOffset.x,
+			Cursor::Pos().y - HoldOffset.y
+		};
 	}
+	else
+	{
+		drawPos =
+		{
+			CurrentBlockPos.x * CellPitch,
+			CurrentBlockPos.y * CellPitch
+		};
+	}
+
+	CurrentBlock.draw(drawPos);
 }
 
 bool GameScene::CanPlaceBlock(const Block& block) const
@@ -379,7 +396,7 @@ bool GameScene::CanPlaceBlock(const Block& block) const
 					break;
 				}
 
-				if (Blocks.contains(pos))
+				if (board[pos.y][pos.x]==1)
 				{
 					canPlace = false;
 					break;

@@ -20,9 +20,6 @@ void TitleScene::update()
 	m_rankingTransition.update(m_rankingButton.mouseOver());
 	m_exitTransition.update(m_exitButton.mouseOver());
 
-	
-
-
 	//マウスカーソルを手の形にする
 	if (m_startButton.mouseOver() || m_rankingButton.mouseOver() || m_exitButton.mouseOver())
 	{
