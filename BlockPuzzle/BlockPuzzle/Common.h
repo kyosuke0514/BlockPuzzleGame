@@ -27,7 +27,7 @@ struct GameData
 	int32 lastScore = 0;
 
 	//ハイスコア
-	Array<int32> highScores = {};
+	Array<int32> highScores = { 0, 0, 0, 0, 0 };
 };
 
 using App = SceneManager<State, GameData>;

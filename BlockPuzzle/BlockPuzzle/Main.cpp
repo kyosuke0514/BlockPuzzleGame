@@ -1,6 +1,7 @@
 ﻿# include "Common.h"
 # include "TitleScene.h"
 # include "GameScene.h"
+# include "GameOverScene.h"
 # include "Ranking.h"
 
 void Main()
@@ -12,14 +13,33 @@ void Main()
 	App manager;
 	manager.add<TitleScene>(State::Title);
 	manager.add<GameScene>(State::Game);
+	manager.add<GameOverScene>(State::GameOver);
 	manager.add<Ranking>(State::Ranking);
+
 
 	while (System::Update())
 	{
+		if (Key1.down())
+		{
+			manager.changeScene(State::Title);
+		}
+		if (Key2.down())
+		{
+			manager.changeScene(State::Game);
+		}
+		if (Key3.down())
+		{
+			manager.changeScene(State::GameOver);
+		}
+		if (Key4.down())
+		{
+			manager.changeScene(State::Ranking);
+		}
 		if (not manager.update())
 		{
 			break;
 		}
+		
 	}
 }
 

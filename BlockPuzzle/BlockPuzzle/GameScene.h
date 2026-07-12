@@ -32,7 +32,8 @@ private:
 		Texture{ U"PuzzleSozai/BlockViolet.png" },
 		Texture{ U"PuzzleSozai/BlockPurple.png" },
 		Texture{ U"PuzzleSozai/BlockGray.png" }
-	};	Array<Block> BlockShapes
+	};
+	Array<Block> BlockShapes
 	{
 		Block(Array<Point>{ Point{0,0} },GemTextures[10]),
 		Block(Array<Point>{ Point{0,0}, Point{1,0}, Point{2,0} },GemTextures[10]),

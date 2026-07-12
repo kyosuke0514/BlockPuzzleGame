@@ -5,6 +5,7 @@
 
 GameScene::GameScene(const InitData& init) : IScene{ init }
 {
+	getData().Score = 0;
 	board = Array<Array<int>>(BoardHeight, Array<int>(BoardWidth, 0));
 	for (int i = 0; i < 3; i++)
 	{
@@ -212,25 +213,31 @@ void GameScene::update()
 						CurrentBlocks << BlockShapes[index];
 					}
 				}
-
-				bool canPlaceAny = false;
-
-				for (const auto& block : CurrentBlocks)
-				{
-					if (CanPlaceBlock(block))
-					{
-						canPlaceAny = true;
-						break;
-					}
-				}
-
-				if (!canPlaceAny)
-				{
-					getData().lastScore = getData().Score;
-					changeScene(State::GameOver);
-				}
 			}
 		}
+	}
+	
+	//3つのブロックのうち、1つも置ける場所がなくなったらゲームオーバー
+	bool canPlaceAny = false;
+
+	for (const auto& block : CurrentBlocks)
+	{
+		if (block.shape.isEmpty())
+		{
+			continue;
+		}
+
+		if (CanPlaceBlock(block))
+		{
+			canPlaceAny = true;
+			break;
+		}
+	}
+
+	if (!canPlaceAny)
+	{
+		getData().lastScore = getData().Score;
+		changeScene(State::GameOver);
 	}
 }
 
@@ -272,7 +279,7 @@ void GameScene::draw() const
 
 		NumberTexture(Rect(num * DigitW, 0, DigitW, DigitH))
 			.scaled(0.5)
-			.draw(50 + i * 50, 50);
+			.draw(50 + i * 50, 200);
 	}
 
 
@@ -335,28 +342,6 @@ void GameScene::draw() const
 		CurrentBlocks[i].draw({ PreviewX, PreviewY });
 	}
 
-	//新規ブロック表示
-	//for (const auto& cell : CurrentBlock.shape)
-	//{
-	//	Point drawPos;
-	//	if (!isHolding)
-	//	{
-	//		drawPos =
-	//		{
-	//			(CurrentBlockPos.x + cell.x) * CellSize,//ブロック本体の位置＋移動したときの各マスのずれ
-	//			(CurrentBlockPos.y + cell.y) * CellSize
-	//		};
-	//	}
-	//	else
-	//	{
-	//		drawPos =
-	//		{
-	//			Cursor::Pos().x - HoldOffset.x + cell.x * CellSize,
-	//			Cursor::Pos().y - HoldOffset.y + cell.y * CellSize
-	//		};
-	//	}
-	//	CurrentBlock.draw(drawPos);
-	//}
 	Point drawPos;
 
 	if (isHolding)
@@ -381,6 +366,11 @@ void GameScene::draw() const
 
 bool GameScene::CanPlaceBlock(const Block& block) const
 {
+	if (block.shape.isEmpty())
+	{
+		return false;
+	}
+
 	for (int y = 0; y < BoardHeight; y++)
 	{
 		for (int x = 0; x < BoardWidth; x++)
