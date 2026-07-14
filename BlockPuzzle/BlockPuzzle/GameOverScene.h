@@ -15,6 +15,9 @@ private:
 	Texture RankingTexture{ U"PuzzleSozai/Ranking.png" };
 	Texture ExitTexture{ U"PuzzleSozai/Exit.png" };
 	Texture BackTexture{ U"PuzzleSozai/Back1.png" };
+	Texture GameOverTexture{ U"PuzzleSozai/GameOver.png" };
+	Texture ScoreTexture{ U"PuzzleSozai/Score1.png" };
+	Texture NumberTexture{ U"PuzzleSozai/Number.png" };
 
 	//ボタンの当たり判定
 	RoundRect m_startButton;

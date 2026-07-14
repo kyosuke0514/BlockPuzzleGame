@@ -267,6 +267,12 @@ void GameScene::draw() const
 	//スコア画像
 	ScoreTexture.draw(40, 40);
 
+	//ボタン画像
+	LmouseTexture.scaled(1.1).draw(40,800);
+	RmouseTexture.scaled(1.1).draw(40, 900);
+	PickTexture.scaled(0.8).draw(130, 810);
+	RotateTexture.scaled(0.8).draw(130, 920);
+
 	//数字画像
 	const int DigitW = 64;
 	const int DigitH = 128;

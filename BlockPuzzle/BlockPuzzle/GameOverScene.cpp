@@ -50,7 +50,10 @@ void  GameOverScene::draw()const
 	double alpha = Periodic::Sine0_1(3s);
 
 	//ゲームオーバー画像
+	GameOverTexture.scaled(1.5).drawAt(center.x, 300);
 
+	//スコア画像
+	ScoreTexture.scaled(1.0).drawAt(center.x - 300, 450);
 
 	//ホバー時に拡大
 	const double startScale = 0.5 + m_startTransition.value() * 0.1;
@@ -61,6 +64,21 @@ void  GameOverScene::draw()const
 	PlayTexture.scaled(startScale).drawAt(m_startButton.center());
 	RankingTexture.scaled(rankingScale).drawAt(m_rankingButton.center());
 	ExitTexture.scaled(exitScale).drawAt(m_exitButton.center());
+
+	//数字画像
+	const int DigitW = 64;
+	const int DigitH = 128;
+
+	String score = Format(getData().Score);
+
+	for (size_t i = 0; i < score.size(); i++)
+	{
+		int num = score[i] - U'0';
+
+		NumberTexture(Rect(num * DigitW, 0, DigitW, DigitH))
+			.scaled(1.0)
+			.draw((center.x + 150) + i * 50, 390);
+	}
 
 	//選択中ブロック
 	if (m_startTransition.value() > 0.0)

@@ -42,12 +42,16 @@ private:
 		Block(Array<Point>{ Point{0,0}, Point{1,0}, Point{2,0}, Point{1,1} },GemTextures[10]),
 		Block(Array<Point>{Point{0,0}, Point{1,0}, Point{2,0},Point{0,1}, Point{1,1}, Point{2,1},Point{0,2}, Point{1,2}, Point{2,2},},GemTextures[10])
 	};
+	//イラスト素材
 	Texture Board1Texture{ U"PuzzleSozai/Board1.png" };
 	Texture Board2Texture{ U"PuzzleSozai/Board2.png" };
 	Texture BackTexture{ U"PuzzleSozai/Back1.png" };
 	Texture ScoreTexture{ U"PuzzleSozai/Score.png" };
 	Texture NumberTexture{ U"PuzzleSozai/Number.png" };
-	
+	Texture LmouseTexture{ U"PuzzleSozai/Lmouse.png" };
+	Texture RmouseTexture{ U"PuzzleSozai/Rmouse.png" };
+	Texture PickTexture{ U"PuzzleSozai/Pick.png" };
+	Texture RotateTexture{ U"PuzzleSozai/Rotate.png" };
 };
 
 
