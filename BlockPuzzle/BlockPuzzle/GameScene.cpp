@@ -5,6 +5,10 @@
 
 GameScene::GameScene(const InitData& init) : IScene{ init }
 {
+	//BGM
+	GameBGM.setVolume(0.3);
+	GameBGM.play();
+
 	getData().Score = 0;
 	board = Array<Array<int>>(BoardHeight, Array<int>(BoardWidth, 0));
 	for (int i = 0; i < 3; i++)
@@ -57,6 +61,10 @@ void GameScene::update()
 
 				if (rect.leftClicked())
 				{
+					//SE
+					PickSE.setVolume(0.4);
+					PickSE.play();
+
 					SelectedBlock = i;
 					CurrentBlock = CurrentBlocks[i];
 
@@ -76,6 +84,9 @@ void GameScene::update()
 		//ブロックを配置
 		if (MouseL.up())
 		{
+			//SE
+			PlaceSE.setVolume(0.4);
+			PlaceSE.play();
 			bool canPlace = true; //ブロックが重なっているか
 
 			if (0 <= blockPos.x && blockPos.x < BoardWidth && 0 <= blockPos.y && blockPos.y < BoardHeight)
@@ -173,10 +184,14 @@ void GameScene::update()
 					}
 
 					int clearCount = clearRows.size() + clearCols.size();
-
+					
 					//消したら1列につき１００点
 					if (clearCount > 0)
 					{
+						//SE
+						BlockSE.setVolume(0.4);
+						BlockSE.play();
+
 						getData().Score += clearCount * 100;
 					}
 

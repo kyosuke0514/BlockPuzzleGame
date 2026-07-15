@@ -29,5 +29,11 @@ private:
 	Transition m_startTransition{ 0.4s, 0.2s };
 	Transition m_rankingTransition{ 0.4s, 0.2s };
 	Transition m_exitTransition{ 0.4s, 0.2s };
+
+	//BGM素材
+	const Audio TitleBGM{ Audio::Stream, U"Data/TitleBGM.mp3", Loop::Yes };
+
+	//SE素材
+	const Audio BotanSE{ Audio::Stream, U"Data/BotanSE.mp3"};
 };
 

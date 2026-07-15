@@ -3,6 +3,10 @@
 
 GameOverScene::GameOverScene(const InitData& init) : IScene{ init }
 {
+	//BGM
+	TitleBGM.setVolume(0.3);
+	TitleBGM.play();
+
 	const Vec2 center = Scene::Center();
 
 	m_startButton = RoundRect{ Arg::center(center.x, center.y + 50), 300, 60, 8 };
@@ -27,14 +31,23 @@ void GameOverScene::update()
 	//ボタンのクリック処理
 	if (m_startButton.leftClicked())//ゲームへ
 	{
+		//SE
+		BotanSE.setVolume(0.4);
+		BotanSE.play();
 		changeScene(State::Game);
 	}
 	else if (m_rankingButton.leftClicked())//ランキングへ
 	{
+		//SE
+		BotanSE.setVolume(0.4);
+		BotanSE.play();
 		changeScene(State::Ranking);
 	}
 	else if (m_exitButton.leftClicked())//終了
 	{
+		//SE
+		BotanSE.setVolume(0.4);
+		BotanSE.play();
 		System::Exit();
 	}
 }

@@ -20,5 +20,11 @@ private:
 
 	//順位
 	int32 m_rank = -1;
+
+	//BGM素材
+	const Audio TitleBGM{ Audio::Stream, U"Data/TitleBGM.mp3", Loop::Yes };
+
+	//SE素材
+	const Audio BotanSE{ Audio::Stream, U"Data/BotanSE.mp3" };
 };
 

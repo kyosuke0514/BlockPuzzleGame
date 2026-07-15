@@ -3,6 +3,10 @@
 Ranking::Ranking(const InitData& init)
 	: IScene{ init }
 {
+	//BGM
+	TitleBGM.setVolume(0.3);
+	TitleBGM.play();
+
 	auto& data = getData();
 
 	if (data.lastScore)
@@ -30,7 +34,9 @@ void Ranking::update()
 {
 	if (MouseL.down())
 	{
-		//タイトルシーン
+		//SE
+		BotanSE.setVolume(0.4);
+		BotanSE.play();
 		changeScene(State::Title);
 	}
 }
