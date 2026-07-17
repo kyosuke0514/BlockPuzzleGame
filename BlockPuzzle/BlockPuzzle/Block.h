@@ -14,9 +14,8 @@ public:
 	Array<Point>shape;
 	Point pos;
 	
-	
-	
 private:
+	//ブロック画像
 	Texture maintex;
 };
 

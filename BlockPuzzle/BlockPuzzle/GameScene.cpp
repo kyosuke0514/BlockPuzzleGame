@@ -41,14 +41,16 @@ void GameScene::update()
 		CurrentBlock.rotate();
 	}
 
-	//ブロックを取得
+	//ブロックを持っていないとき取得
 	if (!isHolding)
 	{
+		//３つのブロックを順番に判定
 		for (int i = 0; i < CurrentBlocks.size(); i++)
 		{
 			const int PreviewX = BoardOffsetX + BoardPixelW + 50;
 			const int PreviewY = BoardOffsetY + 50 + i * 180;
 
+			//ブロックを構成する各マスを判定
 			for (const auto& cell : CurrentBlocks[i].shape)
 			{
 				Rect rect
@@ -59,6 +61,7 @@ void GameScene::update()
 					CellSize
 				);
 
+				//ブロックを取得
 				if (rect.leftClicked())
 				{
 					//SE
@@ -87,8 +90,20 @@ void GameScene::update()
 			//SE
 			PlaceSE.setVolume(0.4);
 			PlaceSE.play();
-			bool canPlace = true; //ブロックが重なっているか
 
+			//ブロックが重なっているか
+			bool canPlace = true; 
+
+			//盤面外でクリックしたらブロックが元の位置に移動
+			if (!(0 <= blockPos.x && blockPos.x < BoardWidth && 0 <= blockPos.y && blockPos.y < BoardHeight))
+			{
+				isHolding = false;
+				CurrentBlock = Block();
+				SelectedBlock = -1;
+				return;
+			}
+			
+			//マウスカーソルが盤面内にある場合
 			if (0 <= blockPos.x && blockPos.x < BoardWidth && 0 <= blockPos.y && blockPos.y < BoardHeight)
 			{
 				//配置可能か判定
@@ -115,8 +130,10 @@ void GameScene::update()
 					}
 				}
 
+				//配置可能なら盤面に配置する
 				if (canPlace)
 				{
+					//ブロックを盤面に配置
 					for (const auto& cell : CurrentBlock.shape)
 					{
 						Point pos
@@ -133,6 +150,7 @@ void GameScene::update()
 					//縦１列揃ったら消える
 					Array<int> clearCols;
 
+					//揃っている横一列を探す
 					for (int y = 0; y < BoardHeight; y++)
 					{
 						int count = 0;
@@ -149,6 +167,7 @@ void GameScene::update()
 							clearRows << y;
 						}
 					}
+					//揃っている縦一列を探す
 					for (int x = 0; x < BoardWidth; x++)
 					{
 						int count = 0;
@@ -167,6 +186,7 @@ void GameScene::update()
 						}
 					}
 
+					//揃った横一列のブロックを消す
 					for (int y : clearRows)
 					{
 						for (int x = 0; x < BoardWidth; x++)
@@ -174,7 +194,7 @@ void GameScene::update()
 							board[y][x] = 0;
 						}
 					}
-
+					//揃った縦一列のブロックを消す
 					for (int x : clearCols)
 					{
 						for (int y = 0; y < BoardHeight; y++)
@@ -183,6 +203,7 @@ void GameScene::update()
 						}
 					}
 
+					//消した行数と列数を計算
 					int clearCount = clearRows.size() + clearCols.size();
 					
 					//消したら1列につき１００点
@@ -204,7 +225,7 @@ void GameScene::update()
 
 				}
 					
-				// ３つのブロックを使い終わったか
+				//３つのブロックを使い終わったか
 				bool allEmpty = true;
 
 				for (const auto& block : CurrentBlocks)
@@ -235,6 +256,7 @@ void GameScene::update()
 	//3つのブロックのうち、1つも置ける場所がなくなったらゲームオーバー
 	bool canPlaceAny = false;
 
+	//残っているブロックを順番に確認
 	for (const auto& block : CurrentBlocks)
 	{
 		if (block.shape.isEmpty())
@@ -249,6 +271,7 @@ void GameScene::update()
 		}
 	}
 
+	//どのブロックも配置できなければゲームオーバー
 	if (!canPlaceAny)
 	{
 		getData().lastScore = getData().Score;
@@ -288,19 +311,18 @@ void GameScene::draw() const
 	PickTexture.scaled(0.8).draw(130, 810);
 	RotateTexture.scaled(0.8).draw(130, 920);
 
-	//数字画像
+	//スコア数字画像
 	const int DigitW = 64;
 	const int DigitH = 128;
 
 	String score = Format(getData().Score);
 
+	//スコア数字画像表示
 	for (size_t i = 0; i < score.size(); i++)
 	{
 		int num = score[i] - U'0';
 
-		NumberTexture(Rect(num * DigitW, 0, DigitW, DigitH))
-			.scaled(0.5)
-			.draw(50 + i * 50, 200);
+		NumberTexture(Rect(num * DigitW, 0, DigitW, DigitH)).scaled(0.5).draw(50 + i * 50, 200);
 	}
 
 
@@ -387,11 +409,13 @@ void GameScene::draw() const
 
 bool GameScene::CanPlaceBlock(const Block& block) const
 {
+	//使用済みのブロックは配置できない
 	if (block.shape.isEmpty())
 	{
 		return false;
 	}
 
+	//盤面の全てのマスを確認
 	for (int y = 0; y < BoardHeight; y++)
 	{
 		for (int x = 0; x < BoardWidth; x++)

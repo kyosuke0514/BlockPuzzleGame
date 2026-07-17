@@ -1,14 +1,13 @@
 ﻿#include "stdafx.h"
 #include "Block.h"
 
-
-
 Block::Block()
 {
 }
 
 Block::Block(const Array<Point>& shape,Texture tex)
 {
+	//ブロックの形状とテクスチャを初期化
 	this->shape = shape;
 	maintex = tex;
 }
@@ -20,6 +19,7 @@ void Block::update()
 
 void Block::draw(const Point& drawPos) const
 {
+	//ブロックを構成する各マスを描画
 	for (const auto& cell : shape)
 	{
 		maintex.scaled(4.0).draw(
@@ -31,7 +31,9 @@ void Block::draw(const Point& drawPos) const
 
 void Block::rotate()
 {
-	Array<Point> rotated;//回転データ
+	//回転後の座標を保存
+	Array<Point> rotated;
+	//ブロックの中心座標を計算
 	Vec2 center(0, 0);
 	for (const auto& cell :shape)
 	{
@@ -40,6 +42,7 @@ void Block::rotate()
 
 	center /=shape.size();
 
+	//各マスの中心を基準に90度回転
 	for (const auto& cell : shape)
 	{
 		double relX = cell.x - center.x;
@@ -51,6 +54,7 @@ void Block::rotate()
 		rotated << Point(newX, newY);
 	}
 
+	//回転後の形状を反映
 	shape = rotated;
 }
 

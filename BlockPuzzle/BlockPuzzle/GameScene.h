@@ -12,13 +12,15 @@ public:
 
 private:
 	int SelectedBlock = -1;
-	bool isHolding = false;//ブロックを持つか
-	bool CanPlaceBlock(const Block& block) const;
-	Array<Array<int>>board;//盤面データ
-	Point CurrentBlockPos = { 12,3 };
-	Point HoldOffset;//どこをつかむか
-	Block CurrentBlock;// 現在のブロック形
+	bool isHolding = false;							//ブロックを持つか
+	bool CanPlaceBlock(const Block& block) const;	//ブロックを盤面のどこに配置できるか判定
+	Array<Array<int>>board;							//盤面データ
+	Point CurrentBlockPos = { 12,3 };				//ブロック初期位置
+	Point HoldOffset;								//どこをつかむか
+	Block CurrentBlock;								//現在のブロック形
 	Array<Block>CurrentBlocks;
+
+	//ブロックイラスト素材
 	Array<Texture> GemTextures =
 	{
 		Texture{ U"PuzzleSozai/BlockBlack.png" },
@@ -33,6 +35,8 @@ private:
 		Texture{ U"PuzzleSozai/BlockPurple.png" },
 		Texture{ U"PuzzleSozai/BlockGray.png" }
 	};
+
+	//ブロックデータ
 	Array<Block> BlockShapes
 	{
 		Block(Array<Point>{ Point{0,0} },GemTextures[10]),

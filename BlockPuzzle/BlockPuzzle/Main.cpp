@@ -16,7 +16,6 @@ void Main()
 	manager.add<GameOverScene>(State::GameOver);
 	manager.add<Ranking>(State::Ranking);
 
-
 	while (System::Update())
 	{
 		if (Key1.down())
@@ -39,7 +38,6 @@ void Main()
 		{
 			break;
 		}
-		
 	}
 }
 
