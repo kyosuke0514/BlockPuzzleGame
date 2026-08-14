@@ -48,7 +48,7 @@ void GameScene::update()
 		for (int i = 0; i < CurrentBlocks.size(); i++)
 		{
 			const int PreviewX = BoardOffsetX + BoardPixelW + 50;
-			const int PreviewY = BoardOffsetY + 50 + i * 180;
+			const int PreviewY = BoardOffsetY + 50 + i * 220;
 
 			//ブロックを構成する各マスを判定
 			for (const auto& cell : CurrentBlocks[i].shape)
@@ -380,7 +380,7 @@ void GameScene::draw() const
 		}
 
 		const int PreviewX = BoardOffsetX + BoardPixelW + 50;
-		const int PreviewY = BoardOffsetY + 50 + i * 180;
+		const int PreviewY = BoardOffsetY + 50 + i * 220;
 
 		CurrentBlocks[i].draw({ PreviewX, PreviewY });
 	}
