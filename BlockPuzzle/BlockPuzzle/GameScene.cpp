@@ -361,7 +361,7 @@ void GameScene::draw() const
 					BoardOffsetY + 4 + pos.y * CellPitch,
 					CellSize,
 					CellSize
-				).drawFrame(4, Palette::Yellow);
+				).drawFrame(4, Palette::Black);
 			}
 		}
 	}
